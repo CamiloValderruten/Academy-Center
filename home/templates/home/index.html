@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    {% load static %}
+    <header class="vertical-center text-center">
+        <div class="container">
+            <h1 class="display-5">Love your child care management software.</h1>
+            <a class="btn btn-primary btn-lg btn-demo" href="{% url 'home:index' %}">
+                Get Started for Free</a>
+            <a class="btn btn-primary btn-lg btn-learn" href="#">Watch Our Video</a>
+            <p></p>
+        </div>
+    </header>
+    <section id="features" class="bg-yellow vertical-center">
+        <div class="container">
+            <h1 class="display-3 mb-5">Features</h1>
+
+            <div class="row">
+                <div class="col-md-4 animate-box">
+                    <div class="feature-left">
+							<span class="icon">
+								<i class="icon-paperclip"></i>
+							</span>
+                        <div class="feature-copy">
+                            <h3>Report Management</h3>
+                            <p>Keep track of every kid's progress through the day and then share it with their
+                                parents.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 animate-box">
+                    <div class="feature-left">
+							<span class="icon">
+								<i class="icon-clock"></i>
+							</span>
+                        <div class="feature-copy">
+                            <h3>Attendance Tracking</h3>
+                            <p>Safely and quickly check kids into classrooms and track attendance daily.</p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-4 animate-box">
+                    <div class="feature-left">
+							<span class="icon">
+								<i class="icon-wallet"></i>
+							</span>
+                        <div class="feature-copy">
+                            <h3>Tuition Payment</h3>
+                            <p>Parents will be able to pay for tuition either one time or recurring basis.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 animate-box">
+                    <div class="feature-left">
+							<span class="icon">
+								<i class="icon-paper-plane"></i>
+							</span>
+                        <div class="feature-copy">
+                            <h3>Parent Messaging</h3>
+                            <p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 animate-box">
+                    <div class="feature-left">
+							<span class="icon">
+								<i class="icon-genius"></i>
+							</span>
+                        <div class="feature-copy">
+                            <h3>Smart Analytics</h3>
+                            <p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit.</p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-4 animate-box">
+                    <div class="feature-left">
+							<span class="icon">
+								<i class="icon-chat"></i>
+							</span>
+                        <div class="feature-copy">
+                            <h3>Support</h3>
+                            <p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

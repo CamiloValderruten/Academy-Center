@@ -1,0 +1,11 @@
+{% extends "authentication/layout.html" %}
+{% load widget_tweaks %}
+
+
+{% block title %}Let's get you logged in!{% endblock %}
+{% block submit %}Login{% endblock %}
+
+{% block after_form %}
+    {{ form.errors }}
+    <p class="text-center"><a href="{% url 'password_reset' %}">Lost password?</a></p>
+{% endblock %}

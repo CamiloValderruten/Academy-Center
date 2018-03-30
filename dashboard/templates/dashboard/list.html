@@ -1,0 +1,42 @@
+{% extends 'dashboard/layout.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">{{ title }}</h5>
+                    <div class="table-responsive">
+                        <table class="table center-aligned-table">
+                            <thead>
+                            <tr>
+                                <th class="border-bottom-0">Username</th>
+                                <th class="border-bottom-0">First Name</th>
+                                <th class="border-bottom-0">Last Name</th>
+                                <th class="border-bottom-0"></th>
+                                <th class="border-bottom-0"></th>
+                                <th class="border-bottom-0"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for administrator in object_list %}
+                                <tr>
+                                    <td>{{ administrator.user.username }}</td>
+                                    <td>{{ administrator.user.first_name }}</td>
+                                    <td>{{ administrator.user.last_name }}</td>
+                                    <td><label class="badge badge-teal">Approved</label></td>
+                                    <td><a href="#" class="btn btn-outline-success btn-sm">View
+                                        Order</a>
+                                    </td>
+                                    <td><a href="#" class="btn btn-outline-danger btn-sm">Cancel</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

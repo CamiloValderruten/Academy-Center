@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Academy Center</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="daycare, management, students, children, school, software, online"/>
+    <meta name="author" content=""/>
+    <meta name="google-site-verification" content="nIDjv7sH442gXx6Qt-rgalmok_M30J9_1CAbg2oRrpk"/>
+    <meta name="google" content="nositelinkssearchbox"/>
+    <meta name="description" content="A online daycare management software."/>
+    <meta property="og:title" content="Academy Center"/>
+    <meta property="og:image" content=""/>
+    <meta property="og:url" content=""/>
+    <meta property="og:site_name" content=""/>
+    <meta property="og:description" content=""/>
+    <meta name="twitter:title" content=""/>
+    <meta name="twitter:image" content=""/>
+    <meta name="twitter:url" content=""/>
+    <meta name="twitter:card" content=""/>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113309326-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments)
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'UA-113309326-1');
+    </script>
+
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static '/css/home.css' %}"/>
+
+    {% block styles %}
+    {% endblock %}
+</head>
+<body>
+
+
+{% block navbar %}
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+        <h5 class="my-0 mr-md-auto font-weight-normal">
+            <a class="logo" href="{% url 'home:index' %}">Academy<span style="color: black;">Center</span></a>
+        </h5>
+        <nav class="my-2 my-md-0 mr-md-3">
+            <a class="p-2 text-dark" href="{% url 'home:pricing' %}">Pricing</a>
+            <a class="p-2 text-dark" href="{% url 'home:features' %}">Features</a>
+            <a class="p-2 text-dark" href="{% url 'home:contact' %}">Contact</a>
+        </nav>
+        <a class="btn btn-primary" href="{% url 'home:register' %}">Get Started</a>
+    </div>
+{% endblock %}
+
+{% block body %}
+{% endblock %}
+
+{% block footer %}
+    <div class="container">
+        <footer class="pt-4 my-md-5 pt-md-5 border-top">
+            <div class="row">
+                <div class="col-12 col-md">
+                    <a class="logo" href="/">Academy<span style="color: black;">Center</span></a>
+                    <small class="d-block mb-3 text-muted">© 2018</small>
+                </div>
+                <div class="col-6 col-md">
+                    <h5>Features</h5>
+                    <ul class="list-unstyled text-small">
+                        <li><a class="text-muted" href="{% url 'home:pricing' %}">Pricing</a></li>
+                        <li><a class="text-muted" href="{% url 'home:features' %}">Features</a></li>
+                        <li><a class="text-muted" href="{% url 'home:contact' %}">Contact</a></li>
+                        <li><a class="text-muted" href="{% url 'home:index' %}">Try Now</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled text-small">
+                        <li><a class="text-muted" href="#">Resource</a></li>
+                        <li><a class="text-muted" href="#">Resource name</a></li>
+                        <li><a class="text-muted" href="#">Another resource</a></li>
+                        <li><a class="text-muted" href="#">Final resource</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md">
+                    <h5>About</h5>
+                    <ul class="list-unstyled text-small">
+                        <li><a class="text-muted" href="#">Team</a></li>
+                        <li><a class="text-muted" href="#">Locations</a></li>
+                        <li><a class="text-muted" href="#">Privacy</a></li>
+                        <li><a class="text-muted" href="#">Terms</a></li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+    </div>
+{% endblock %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+<script src="{% static 'js/home.js' %}"></script>
+
+{% block scripts %}
+{% endblock %}
+</body>
+</html>
+
