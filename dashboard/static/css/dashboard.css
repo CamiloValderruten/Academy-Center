@@ -1,0 +1,20 @@
+.badge-primary {
+    border: 1px solid #DD356E;
+    background-color: #DD356E;
+    color: #ffffff;
+}
+
+.navbar {
+    background: linear-gradient(88deg, #dd356e, #dd5786);
+}
+
+
+div .logo-small,.logo {
+    color: #DD356E;
+    font-size: 32px;
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: "Inconsolata", Arial, sans-serif
+}

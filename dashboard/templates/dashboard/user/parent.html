@@ -1,0 +1,105 @@
+{% extends 'dashboard/user/profile.html' %}
+{% load widget_tweaks %}
+{% block sidebar_left_bottom %}
+    <script>
+        function search_student(input) {
+            var parents = $('.search-parent');
+            var term = input.value.toLowerCase();
+            var linked_objects = $('.parent');
+            var linked_ids = [];
+            linked_objects.each(function (index, object) {
+                linked_ids.push(object.getAttribute('data-id'));
+            });
+            parents.each(function (index, parent) {
+                parent.style.display = 'none';
+                if (term.length > 0) {
+                    var id = parent.getAttribute('data-id');
+                    if (linked_ids.includes(id)) return;
+                    var first_name_match = parent.getAttribute('data-first-name').toLowerCase().indexOf(term) !== -1;
+                    var last_name_match = parent.getAttribute('data-last-name').toLowerCase().indexOf(term) !== -1;
+                    var username_match = parent.getAttribute('data-username').toLowerCase().indexOf(term) !== -1;
+                    var email_match = parent.getAttribute('data-email').toLowerCase().indexOf(term) !== -1;
+                    if (first_name_match || last_name_match || username_match || email_match) {
+                        parent.style.display = 'flex';
+                    }
+                }
+
+            });
+        }
+    </script>
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Students</h4>
+            <div class="preview-list">
+                {% for user in object.students.all %}
+                    <div class="preview-item border-bottom px-0 parent" data-id="{{ user.pk }}">
+                        <a href="{% url 'dashboard:student' pk=user.pk %}">
+                            <div class="preview-thumbnail">
+                                <img src="{{ user.profile_image_url }}" alt="image" class="rounded-circle">
+                            </div>
+                        </a>
+                        <div class="preview-item-content d-flex flex-grow">
+                            <div class="flex-grow">
+
+                                <h6 class="preview-subject">
+                                    <a href="{% url 'dashboard:student' pk=user.pk %}">
+                                        {{ user.first_name }} {{ user.last_name }}
+                                    </a>
+                                    <span class="float-right small">
+                                        <a href="{% url 'core:unlink_parent_student' parent_id=object.pk student_id=user.pk %}">
+                                            <button class="btn btn-sm btn-outline-danger">Unlink</button>
+                                        </a>
+                                    </span>
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4 class="card-title">Link a Student</h4>
+            <div class="add-items d-flex mt-2">
+                <input type="text" class="form-control todo-list-input"
+                       onkeyup="search_student(this)" placeholder="Search by parent name, username or email">
+            </div>
+            <div class="preview-list">
+                {% for user in all_students %}
+                    <div class="preview-item border-bottom px-0 search-parent" style="display: none"
+                         data-first-name="{{ user.first_name }}"
+                         data-username="{{ user.username }}"
+                         data-email="{{ user.email }}"
+                         data-id="{{ user.pk }}"
+                         data-last-name="{{ parent.last_name }}" disabled="">
+                        <a href="{% url 'dashboard:student' pk=user.pk %}">
+                            <div class="preview-thumbnail">
+                                <img src="{{ user.profile_image_url }}" alt="image" class="rounded-circle">
+                            </div>
+                        </a>
+                        <div class="preview-item-content d-flex flex-grow">
+                            <div class="flex-grow">
+                                <h6 class="preview-subject">
+                                    <a href="{% url 'dashboard:student' pk=user.pk %}">
+                                        {{ user.first_name }} {{ user.last_name }}
+                                    </a>
+                                    <span class="float-right small">
+                                        <a href="{% url 'core:link_parent_student' parent_id=object.pk student_id=user.pk %}">
+                                            <button class="btn btn-sm btn-outline-success">Link</button>
+                                        </a>
+                                    </span>
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="card mt-4">
+    </div>
+{% endblock %}
+{% block user_content %}
+
+{% endblock %}

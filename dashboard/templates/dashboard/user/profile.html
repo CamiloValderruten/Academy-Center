@@ -1,0 +1,208 @@
+{% extends 'dashboard/layout.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'node_modules/dropify/dist/css/dropify.css' %}" type="text/css">
+
+    <style>
+        .user-profile .side-left .card .avatar img {
+            display: block;
+            width: 90px;
+            height: 90px;
+            border-radius: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .user-profile .side-left .card .overview .achivements li p {
+            text-align: center;
+            margin-bottom: 0;
+            font-weight: 600;
+            font-size: 1.4rem;
+            color: #424964;
+        }
+
+        .user-profile .side-left .card .overview .achivements li p:last-child {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .user-profile .side-left .card .overview .achivements {
+            padding-left: 0px;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-justify-content: center;
+            justify-content: center;
+        }
+
+        .user-profile .side-left .card .avatar .name {
+            text-decoration: none;
+            text-align: center;
+            color: #424964;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        .user-profile .side-left .card .avatar .role {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="row user-profile mb-4">
+        {% block sidebar_left %}
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-12 grid-margin side-left stretch-card">
+                        <div class="card">
+                            <div class="card-body avatar">
+                                <img src="{{ object.profile_image_url }}">
+                                <p class="name mt-2">{{ object.first_name }} {{ object.last_name }}</p>
+                                {% if object.first_name|length == 0 and object.last_name|length == 0 %}
+                                    <p class="name">{{ object.username }}</p>
+                                {% endif %}
+                                <p class="role">{{ object.role_level | title }}</p>
+                                <a class="d-block text-center text-dark" href="#">{{ object.email }}</a>
+                                <a class="d-block text-center text-dark" href="#">{{ object.phone_number }}</a>
+                                {% if user.role_level == 'administrator' %}
+                                    <a href="{% url 'dashboard:delete_user' pk=object.pk %}">
+                                        <button class="btn btn-outline-danger btn-block mt-2">Delete</button>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 grid-margin side-leftrender">
+                        {% block sidebar_left_bottom %}
+
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+
+        {% block sidebar_right %}
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="wrapper d-block d-sm-flex align-items-center justify-content-between">
+                            <h4 class="card-title mb-0">Personal Information</h4>
+                            <ul class="nav nav-tabs tab-solid tab-solid-primary mb-0 mt-2" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active show" id="info-tab" data-toggle="tab" href="#info"
+                                       role="tab"
+                                       aria-controls="info" aria-expanded="true" aria-selected="true">Info</a>
+                                </li>
+
+                                {% if user.id == object.id %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="security-tab" data-toggle="tab" href="#security"
+                                           role="tab"
+                                           aria-controls="security">Security</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div class="wrapper">
+                            <hr>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade active show" id="info" role="tabpanel" aria-labelledby="info">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="name">{{ form.username.label }}</label>
+                                            {{ form.username|add_class:"form-control" }}
+                                            <small class="form-text text-danger">{{ form.username.errors }}</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">{{ form.first_name.label }}</label>
+                                            {{ form.first_name|add_class:"form-control" }}
+                                            <small class="form-text text-danger">{{ form.first_name.errors }}</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">{{ form.last_name.label }}</label>
+                                            {{ form.last_name|add_class:"form-control" }}
+                                            <small class="form-text text-danger">{{ form.last_name.errors }}</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">{{ form.gender.label }}</label>
+                                            {{ form.gender|add_class:"form-control" }}
+                                            <small class="form-text text-danger">{{ form.gender.errors }}</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">{{ form.email.label }}</label>
+                                            {{ form.email|add_class:"form-control" }}
+                                            <small class="form-text text-danger">{{ form.email.errors }}</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">{{ form.phone_number.label }}</label>
+                                            {{ form.phone_number|add_class:"form-control" }}
+                                            <small class="form-text text-danger">{{ form.phone_number.errors }}</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">{{ form.avatar.label }}</label>
+                                            {% render_field form.avatar data-height="100" class+="dropify" %}
+                                            <small class="form-text text-danger">{{ form.avatar.errors }}</small>
+                                        </div>
+                                        <button type="submit" class="btn btn-success mr-2">Update</button>
+                                    </form>
+
+                                </div><!-- tab content ends -->
+                                {% if user.id == object.id %}
+                                    <div class="tab-pane fade" id="security" role="tabpanel"
+                                         aria-labelledby="security-tab">
+                                        <form method="post" action="{% url 'home:password_change' %}">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label for="name">{{ reset_change_form.old_password.label }}</label>
+                                                {% render_field reset_change_form.old_password class+="form-control" %}
+                                                <small class="form-text text-danger">
+                                                    {{ reset_change_form.old_password.errors }}</small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name">{{ reset_change_form.new_password1.label }}</label>
+                                                {% render_field reset_change_form.new_password1 class+="form-control" %}
+                                                <small class="form-text text-danger">
+                                                    {{ reset_change_form.new_password1.errors }}
+                                                </small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name">{{ reset_change_form.new_password2.label }}</label>
+                                                {% render_field reset_change_form.new_password2 class+="form-control" %}
+                                                <small class="form-text text-danger">
+                                                    {{ reset_change_form.new_password2.errors }}
+                                                </small>
+                                            </div>
+                                            <button type="submit" class="btn btn-success mr-2">Submit</button>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </div>
+    {% block user_content %}
+
+    {% endblock %}
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'node_modules/jquery/dist/jquery.js' %}"></script>
+    <script src="{% static 'node_modules/moment/moment.js' %}"></script>
+    <script src="{% static 'node_modules/fullcalendar/dist/fullcalendar.min.js' %}"></script>
+    <script src="{% static 'node_modules/dropify/dist/js/dropify.min.js' %}"></script>
+    <script src="{% static 'js/calendar.js' %}"></script>
+    <script src="{% static 'js/dropify.js' %}"></script>
+{% endblock %}

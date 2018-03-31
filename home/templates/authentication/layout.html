@@ -1,0 +1,27 @@
+{% extends 'home/layout.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block body %}
+    {% load static %}
+    <section>
+        <div class="container" style="max-width: 500px; margin-top: 10%;">
+            <h3 class="display-5 text-center">{% block title %}Form{% endblock %}</h3>
+            {% block form %}
+                <form method="POST">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="form-group">
+                            {{ field.label_tag }}
+                            {{ field |add_class:"form-control" }}
+                        </div>
+                    {% endfor %}
+                    <button class="btn btn-primary btn-block" type="submit">{% block submit %}
+                        Submit{% endblock %}</button>
+                    <input type="hidden" name="next" value="{{ next }}"/>
+                </form>
+            {% endblock %}
+            {% block after_form %}{% endblock %}
+        </div>
+    </section>
+{% endblock %}

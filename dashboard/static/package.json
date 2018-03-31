@@ -4,13 +4,17 @@
   "description": "",
   "main": "index.html",
   "dependencies": {
+    "@shopify/draggable": "^1.0.0-beta.5",
     "bootstrap": "4.0.0",
     "chart.js": "2.7.1",
+    "dropify": "^0.2.2",
     "flag-icon-css": "2.9.0",
     "font-awesome": "4.7.0",
+    "fullcalendar": "^3.9.0",
     "gulp-sourcemaps": "^2.6.3",
-    "jquery": "3.2.1",
+    "jquery": "3.3.1",
     "mdi": "2.1.19",
+    "moment": "2.22.0",
     "popper.js": "1.12.9",
     "simple-line-icons": "2.4.1"
   },

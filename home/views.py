@@ -1,8 +1,6 @@
-from django.shortcuts import render, redirect, resolve_url
+from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from django.db import connection
-from django.http import HttpResponseBadRequest, HttpResponseRedirect
-from tenant_users.tenants.tasks import provision_tenant
+from django.http import HttpResponseBadRequest
 from . import forms
 
 from core import models
@@ -32,19 +30,11 @@ def register(request):
     if request.method == 'POST':
         form = forms.RegisterForm(request.POST)
         if form.is_valid():
-            schema = form.cleaned_data.pop('organization_schema')
-            organization_name = form.cleaned_data.pop('organization_name')
-            email = form.cleaned_data.pop('email')
-
-            user = models.User.objects.create_user(email=email, password=form.cleaned_data.pop('password'))
-            user.first_name = form.cleaned_data.pop('first_name')
-            user.last_name = form.cleaned_data.pop('last_name')
-            user.save()
-
-            domain = provision_tenant(organization_name, schema, email)
+            organization = models.Organization(name=form.cleaned_data.pop('organization_name'))
+            organization.save()
+            user = models.Administrator.objects.create_user(organization=organization, **form.cleaned_data)
             login(request, user)
-
-            return HttpResponseRedirect("http://" + domain + '/dashboard')
+            return redirect('dashboard:index')
         return HttpResponseBadRequest()
 
     if request.method == "GET":

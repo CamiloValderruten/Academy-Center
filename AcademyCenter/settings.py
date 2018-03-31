@@ -8,46 +8,46 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-PROJECT_DIR = os.path.join(BASE_DIR, os.pardir)
+# BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+# PROJECT_DIR = os.path.join(BASE_DIR, os.pardir)
 
 SECRET_KEY = '&l*n+hhw3g5-8a(6e-4v)-asf^_be=$lq^l*6*b#dbqm-$wag@'
 ALLOWED_HOSTS = ['*']
 
-SHARED_APPS = (
-    'tenant_schemas',
-    'home',
-    'core',
-    'tenant_users.permissions',
-    'tenant_users.tenants',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-)
+# SHARED_APPS = (
+#     'tenant_schemas',
+#     'home',
+#     'core',
+#     'tenant_users.permissions',
+#     'tenant_users.tenants',
+#     'django.contrib.auth',
+#     'django.contrib.contenttypes',
+#     'django.contrib.sessions',
+#     'django.contrib.messages',
+#     'django.contrib.staticfiles',
+# )
+#
+# TENANT_APPS = (
+#     'django.contrib.contenttypes',
+#     'django.contrib.auth',
+#     'tenant_users.permissions',
+#     'dashboard',
+# )
+#
+# AUTHENTICATION_BACKENDS = (
+#     'tenant_users.permissions.backend.UserBackend',
+# )
 
-TENANT_APPS = (
-    'django.contrib.contenttypes',
-    'django.contrib.auth',
-    'tenant_users.permissions',
-    'dashboard',
-)
-
-AUTHENTICATION_BACKENDS = (
-    'tenant_users.permissions.backend.UserBackend',
-)
-
-DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'  # Tenant
+# DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'  # Tenant
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 INSTALLED_APPS = (
     'core',
     'home',
     'dashboard',
-    'tenant_schemas',
-    'tenant_users.permissions',
-    'tenant_users.tenants',
+    # 'tenant_schemas',
+    # 'tenant_users.permissions',
+    # 'tenant_users.tenants',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -58,7 +58,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE = [
-    'tenant_schemas.middleware.TenantMiddleware',  # Tenant
+    # 'tenant_schemas.middleware.TenantMiddleware',  # Tenant
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -99,7 +99,7 @@ DATABASES = {
         'USER': 'root',
     },
     'default': {
-        'ENGINE': 'tenant_schemas.postgresql_backend',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'academycenter',
         'USER': 'camilo',
         'PASSWORD': '',
@@ -107,9 +107,9 @@ DATABASES = {
     }
 }
 
-DATABASE_ROUTERS = (
-    'tenant_schemas.routers.TenantSyncRouter',  # Tenant
-)
+# DATABASE_ROUTERS = (
+#     'tenant_schemas.routers.TenantSyncRouter',  # Tenant
+# )
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -137,8 +137,8 @@ USE_L10N = True
 USE_TZ = True
 
 LOGIN_REDIRECT_URL = 'dashboard:index'
-LOGIN_URL = 'login'
-LOGOUT_REDIRECT_URL = 'login'
+LOGIN_URL = 'home:login'
+LOGOUT_REDIRECT_URL = 'home:login'
 
 STATIC_URL = '/static/'
 DEFAULT_FROM_EMAIL = "support@academycenteronline.com"
@@ -149,9 +149,8 @@ EMAIL_HOST_PASSWORD = 'SG.z0BuJ87QR-6kNc3ZmBhSTA.UUeKwqK8yxrYX6PANZzafeJwF3aeUix
 EMAIL_USE_TLS = True
 
 
-ROOT_URLCONF = 'AcademyCenter.urls.urls_organization'
-PUBLIC_SCHEMA_URLCONF = 'AcademyCenter.urls.urls_public'  # Tenant
-TENANT_MODEL = "core.Organization"  # Tenant
+ROOT_URLCONF = 'AcademyCenter.urls'
 AUTH_USER_MODEL = 'core.User'
-TENANT_USERS_DOMAIN = "localhost"
-SESSION_COOKIE_DOMAIN = '.localhost'
+# PUBLIC_SCHEMA_URLCONF = 'AcademyCenter.urls.urls_public'  # Tenant
+# TENANT_MODEL = "core.Organization"  # Tenant
+# TENANT_USERS_DOMAIN = "localhost"

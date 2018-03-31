@@ -8,30 +8,76 @@
     <title>Academy Center</title>
     <link rel="stylesheet" href="{% static 'node_modules/mdi/css/materialdesignicons.min.css' %}">
     <link rel="stylesheet" href="{% static 'node_modules/simple-line-icons/css/simple-line-icons.css' %}">
+    <link rel='stylesheet' href='{% static 'node_modules/fullcalendar/dist/fullcalendar.min.css' %}'/>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" type="text/css">
+
+    {% block styles %}{% endblock %}
+
     <link rel="shortcut icon" href="{% static 'images/favicon.png' %}"/>
+    <style>
+        .tab-solid .nav-item .nav-link.active {
+            border: none;
+            color: #ffffff;
+        }
+
+        .tab-solid-primary .nav-link.active {
+            background: #1991EB;
+        }
+
+        .tab-solid .nav-item .nav-link {
+            border: none;
+        }
+
+        .nav-pills .nav-item .nav-link, .nav-tabs .nav-item .nav-link {
+            font-family: "Poppins", sans-serif;
+            line-height: 1;
+            padding: 13px 28px;
+            font-size: 0.875rem;
+            color: #000;
+            display: -webkit-flex;
+            display: flex;
+            border-radius: 2px;
+        }
+
+        .tab-solid {
+            border: none;
+        }
+
+        .tab-content {
+            padding: 37px 18px 29px 24px;
+            font-family: "Poppins", sans-serif;
+            font-size: 0.875rem;
+            line-height: 1.71;
+            border: 1px solid #f3f3f3;
+            border-radius: 2px;
+        }
+
+        .sidebar .nav .nav-item.nav-profile .profile-name .name :hover {
+            text-decoration: none;
+        }
+
+        a, h6 {
+            text-decoration: none !important;
+            color: black;
+        }
+
+    </style>
 </head>
 
 <body>
 <div class="container-scroller">
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
-            <a class="navbar-brand brand-logo" href="index.html"><img src="{% static 'images/logo.svg' %}" alt="logo"/></a>
-            <a class="navbar-brand brand-logo-mini" href="index.html"><img src="{% static 'images/logo-mini.svg' %}"
-                                                                           alt="logo"/></a>
+            <a class="navbar-brand brand-logo" href="{% url 'dashboard:index' %}">
+                <div class="logo" href="/">Academy<span style="color: black;">Center</span></div>
+            </a>
+            <a class="navbar-brand brand-logo-mini" href="{% url 'dashboard:index' %}">
+                <div class="logo-small" href="/">A<span style="color: black;">C</span></div>
+            </a>
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-center">
-            <ul class="navbar-nav navbar-nav-left header-links d-none d-md-flex">
-                <li class="nav-item">
-                    <a href="#" class="nav-link"><i class="mdi mdi-image-filter"></i>Gallery</a>
-                </li>
-                <li class="nav-item active">
-                    <a href="#" class="nav-link"><i class="mdi mdi-email-outline"></i>Inbox</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link"><i class="mdi mdi-calendar"></i>Calendar</a>
-                </li>
-            </ul>
+
             <ul class="navbar-nav navbar-nav-right">
                 <li class="nav-item dropdown">
                     <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#"
@@ -106,7 +152,7 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item preview-item">
                             <div class="preview-thumbnail">
-                                <img src="images/faces/face4.jpg" alt="image" class="profile-pic">
+                                <img src="" alt="image" class="profile-pic">
                             </div>
                             <div class="preview-item-content flex-grow">
                                 <h6 class="preview-subject ellipsis font-weight-medium">David Grey
@@ -120,7 +166,7 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item preview-item">
                             <div class="preview-thumbnail">
-                                <img src="images/faces/face2.jpg" alt="image" class="profile-pic">
+                                <img src="" alt="image" class="profile-pic">
                             </div>
                             <div class="preview-item-content flex-grow">
                                 <h6 class="preview-subject ellipsis font-weight-medium">Tim Cook
@@ -134,7 +180,7 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item preview-item">
                             <div class="preview-thumbnail">
-                                <img src="images/faces/face3.jpg" alt="image" class="profile-pic">
+                                <img src="" alt="image" class="profile-pic">
                             </div>
                             <div class="preview-item-content flex-grow">
                                 <h6 class="preview-subject ellipsis font-weight-medium"> Johnson
@@ -149,7 +195,7 @@
                 </li>
                 <li class="nav-item d-none d-lg-block">
                     <a class="nav-link" href="#">
-                        <img class="img-xs rounded-circle" src="images/faces/face4.jpg" alt="">
+                        <img class="img-xs rounded-circle" src="" alt="">
                     </a>
                 </li>
             </ul>
@@ -164,21 +210,20 @@
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
             <ul class="nav">
                 <li class="nav-item nav-profile">
-                    <div class="nav-link">
-
-                        <div class="profile-image">
-                            {% if user.avatar %}
-                                <img src="{{ user.avatar }}" alt="image"/>
-                            {% else %}
-                                <img src="{% static 'images/boy.png' %}" alt="image"/>
-                            {% endif %}<span
-                                class="online-status online"></span></div>
-                        <div class="profile-name">
-                            <p class="name">{{ user.first_name }} {{ user.last_name }}</p>
-                            <p class="designation">{{ user.role }}</p>
-                            <div class="badge badge-teal mx-auto mt-3">Online</div>
-                        </div>
-                    </div>
+                    {% with "dashboard:"|add:user.role_level as url %}
+                        <a href="{% url url pk=user.id %}">
+                            <div class="nav-link">
+                                <div class="profile-image">
+                                    <img src="{{ user.profile_image_url }}" alt="image"/>
+                                    <span class="online-status online"></span></div>
+                                <div class="profile-name">
+                                    <p class="name">{{ user.first_name }} {{ user.last_name }}</p>
+                                    <p class="designation">{{ user.role }}</p>
+                                    <div class="badge badge-primary mx-auto mt-3">{{ user.role_level | title }}</div>
+                                </div>
+                            </div>
+                        </a>
+                    {% endwith %}
                 </li>
 
                 <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:index' %}">
@@ -189,16 +234,18 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link collapsed" data-toggle="collapse" href="#general-pages" aria-expanded="true"
+                    <a class="nav-link collapsed" data-toggle="collapse" href="#general-pages"
+                       aria-expanded="true"
                        aria-controls="general-pages"><img class="menu-icon"
-                                                          src="{% static 'images/menu_icons/08.png' %}"
+                                                          src="https://eastsidefamilymedicine.com/wp-content/uploads/2017/04/favicon2.png"
                                                           alt="menu icon">
                         <span class="menu-title">Users</span><i class="menu-arrow"></i></a>
 
                     <div class="collapse" id="general-pages">
                         <ul class="nav flex-column sub-menu">
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'dashboard:administrators' %}">Administrators</a>
+                                <a class="nav-link"
+                                   href="{% url 'dashboard:administrators' %}">Administrators</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'dashboard:teachers' %}">Teachers</a>
@@ -212,37 +259,51 @@
                         </ul>
                     </div>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="pages/widgets.html"><img class="menu-icon"
-                                                                                        src="{% static 'images/menu_icons/02.png' %}"
-                                                                                        alt="menu icon"><span
-                        class="menu-title">Widgets</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="pages/ui-features/buttons.html"><img class="menu-icon"
-                                                                                                    src="{% static 'images/menu_icons/03.png' %}"
-                                                                                                    alt="menu icon"><span
-                        class="menu-title">Buttons</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="pages/forms/basic_elements.html"><img class="menu-icon"
-                                                                                                     src="{% static 'images/menu_icons/04.png' %}"
-                                                                                                     alt="menu icon"><span
-                        class="menu-title">Form</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="pages/charts/chartjs.html"><img class="menu-icon"
-                                                                                               src="{% static 'images/menu_icons/05.png' %}"
-                                                                                               alt="menu icon"><span
-                        class="menu-title">Charts</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="pages/tables/basic-table.html"><img class="menu-icon"
-                                                                                                   src="{% static 'images/menu_icons/06.png' %}"
-                                                                                                   alt="menu icon"><span
-                        class="menu-title">Table</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">
-                    <img class="menu-icon" src="{% static 'images/menu_icons/07.png' %}" alt="menu icon">
+                {#                <li class="nav-item"><a class="nav-link" href="pages/widgets.html"><img class="menu-icon"#}
+                {#                                                                                        src="{% static 'images/menu_icons/02.png' %}"#}
+                {#                                                                                        alt="menu icon"><span#}
+                {#                        class="menu-title">Widgets</span></a></li>#}
+                {#                <li class="nav-item"><a class="nav-link" href="pages/ui-features/buttons.html"><img class="menu-icon"#}
+                {#                                                                                                    src="{% static 'images/menu_icons/03.png' %}"#}
+                {#                                                                                                    alt="menu icon"><span#}
+                {#                        class="menu-title">Buttons</span></a></li>#}
+                {#                <li class="nav-item"><a class="nav-link" href="pages/forms/basic_elements.html"><img class="menu-icon"#}
+                {#                                                                                                     src="{% static 'images/menu_icons/04.png' %}"#}
+                {#                                                                                                     alt="menu icon"><span#}
+                {#                        class="menu-title">Form</span></a></li>#}
+                {#                <li class="nav-item"><a class="nav-link" href="pages/charts/chartjs.html"><img class="menu-icon"#}
+                {#                                                                                               src="{% static 'images/menu_icons/05.png' %}"#}
+                {#                                                                                               alt="menu icon"><span#}
+                {#                        class="menu-title">Charts</span></a></li>#}
+                {#                <li class="nav-item"><a class="nav-link" href="pages/tables/basic-table.html"><img class="menu-icon"#}
+                {#                                                                                                   src="{% static 'images/menu_icons/06.png' %}"#}
+                {#                                                                                                   alt="menu icon"><span#}
+                {#                        class="menu-title">Table</span></a></li>#}
+                <li class="nav-item"><a class="nav-link" href="{% url 'home:logout' %}">
+                    <img class="menu-icon" src="http://icons.iconarchive.com/icons/custom-icon-design/flatastic-9/512/Logout-icon.png" alt="menu icon">
                     <span class="menu-title">Logout</span></a>
                 </li>
 
             </ul>
         </nav>
-        <!-- partial -->
 
         <div class="main-panel">
             <div class="content-wrapper">
+                {% if messages %}
+                    <div class="row purchace-popup">
+                        <div class="col-12">
+                            <span class="d-flex alifn-items-center messages">
+                                {% for message in messages %}
+                                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                                {% endfor %}
+                                <div style=" right: 20px; position: absolute;">
+                                    <i class="mdi mdi-close popup-dismiss"></i>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                {% endif %}
+
                 {% block content %}
 
                 {% endblock %}
@@ -267,9 +328,9 @@
 <script src="{% static 'js/off-canvas.js' %}"></script>
 <script src="{% static 'js/misc.js' %}"></script>
 <script src="{% static 'js/dashboard.js' %}"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5NXz9eVnyJOA81wimI8WYE08kW_JMe8g&callback=initMap" async
-        defer></script>
 <script src="{% static 'js/maps.js' %}"></script>
+{% block scripts %}
+{% endblock %}
 </body>
 
 </html>

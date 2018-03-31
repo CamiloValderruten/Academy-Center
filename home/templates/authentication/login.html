@@ -7,5 +7,5 @@
 
 {% block after_form %}
     {{ form.errors }}
-    <p class="text-center"><a href="{% url 'password_reset' %}">Lost password?</a></p>
+    <p class="text-center"><a href="{% url 'home:password_reset' %}">Lost password?</a></p>
 {% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'dashboard/layout.html' %}
+{% load widget_tweaks %}
+{% block content %}
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Create a new {{ role | title }}</h4>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">{{ form.first_name.label }}</label>
+                                <div class="col-sm-9">
+                                    {{ form.first_name | add_class:"form-control" }}
+                                    <small class="form-text text-danger">{{ form.first_name.errors }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">{{ form.last_name.label }}</label>
+                                <div class="col-sm-9">
+                                    {{ form.last_name | add_class:"form-control" }}
+                                    <small class="form-text text-danger">{{ form.last_name.errors }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">{{ form.username.label }}</label>
+                                <div class="col-sm-9 ">
+                                    {{ form.username | add_class:"form-control" }}
+                                    <small class="form-text text-danger">{{ form.username.errors }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">{{ form.email.label }}</label>
+                                <div class="col-sm-9">
+                                    {{ form.email | add_class:"form-control" }}
+                                    <small class="form-text text-danger">{{ form.email.errors }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+{#                    {% render_field form.password1 value='' style+='display:none;' %}#}
+{#                    {{ form.password1 }}#}
+{#                    {{ form.password1.errors }}#}
+{#                    {{ form.password2.errors }}#}
+{#                    {% render_field form.password2 value='' style+='display:none;' %}#}
+                    <button type="submit" class="btn btn-success float-right">Create {{ role | title }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
