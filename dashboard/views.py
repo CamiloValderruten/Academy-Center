@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import redirect, reverse
 from django.views.generic import ListView, FormView, TemplateView, UpdateView
 from django.contrib.auth import login, forms as auth_forms
 from django.contrib import messages
@@ -12,7 +12,7 @@ class DashboardView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['administrators'] = Administrator.objects.for_organization(self.request.user.organization).all()
+        context['administrators'] = Administrator.objects.filter(organization=self.request.user.organization).all()
         return context
 
 
@@ -64,6 +64,7 @@ class ParentListView(UserListView):
 
 class StudentListView(UserListView):
     model = Student
+    template_name = 'dashboard/student_list.html'
 
 
 """

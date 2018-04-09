@@ -1,6 +1,4 @@
 django
-mysqlclient
 django-widget-tweaks
-django-tenant-schemas
-django-tenant-users
 pillow
+pinax-stripe

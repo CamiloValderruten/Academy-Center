@@ -3,17 +3,17 @@
 {% load static %}
 
 {% block body %}
-    {% load static %}
     <section>
         <div class="container" style="max-width: 500px; margin-top: 10%;">
-            <h3 class="display-5 text-center">{% block title %}Form{% endblock %}</h3>
-            {% block form %}
+            <h3 class="display-5 text-center">{% block title %}{% endblock %}</h3>
+            {% block content %}
                 <form method="POST">
                     {% csrf_token %}
                     {% for field in form %}
                         <div class="form-group">
-                            {{ field.label_tag }}
-                            {{ field |add_class:"form-control" }}
+                            <label>{{ field.label }}</label>
+                            {{ field|add_class:"form-control" }}
+                            <small class="form-text text-danger">{{ field.errors }}</small>
                         </div>
                     {% endfor %}
                     <button class="btn btn-primary btn-block" type="submit">{% block submit %}
@@ -21,7 +21,10 @@
                     <input type="hidden" name="next" value="{{ next }}"/>
                 </form>
             {% endblock %}
-            {% block after_form %}{% endblock %}
+
+            {% block after_form %}
+
+            {% endblock %}
         </div>
     </section>
 {% endblock %}

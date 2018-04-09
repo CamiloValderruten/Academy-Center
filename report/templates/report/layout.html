@@ -1,0 +1,65 @@
+{% extends 'dashboard/layout.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'node_modules/dropify/dist/css/dropify.css' %}" type="text/css">
+    <style>
+        .user-profile .side-left .card .avatar img {
+            display: block;
+            width: 90px;
+            height: 90px;
+            border-radius: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .user-profile .side-left .card .overview .achivements li p {
+            text-align: center;
+            margin-bottom: 0;
+            font-weight: 600;
+            font-size: 1.4rem;
+            color: #424964;
+        }
+
+        .user-profile .side-left .card .overview .achivements li p:last-child {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .user-profile .side-left .card .overview .achivements {
+            padding-left: 0px;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-justify-content: center;
+            justify-content: center;
+        }
+
+        .user-profile .side-left .card .avatar .name {
+            text-decoration: none;
+            text-align: center;
+            color: #424964;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        .user-profile .side-left .card .avatar .role {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+{% endblock %}
+
+{% block pagescripts %}
+    {{ block.super }}
+{% endblock %}

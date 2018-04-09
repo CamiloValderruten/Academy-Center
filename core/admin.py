@@ -6,13 +6,13 @@ from .models import User, Organization
 
 
 class OrganizationAdmin(ModelAdmin):
-    list_display = ('name', 'trial_started_on', 'created_on',)
+    list_display = ('name', 'trial_started_on', 'created_on')
     list_filter = ('on_trial',)
 
 
 class CustomUserAdmin(UserAdmin):
-    list_display = ('username', 'first_name', 'last_name')
-    list_filter = ('groups__name', 'is_superuser',)
+    list_display = ('username', 'first_name', 'last_name', 'email', 'phone_number', 'organization')
+    list_filter = ('groups__name', 'organization',)
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         (('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),

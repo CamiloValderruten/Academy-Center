@@ -6,4 +6,5 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls'), name='dashboard'),
     path('api/', include('core.urls'), name='api'),
     path('admin/', admin.site.urls, name='admin'),
+    path("payments/", include("pinax.stripe.urls")),
 ]

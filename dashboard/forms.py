@@ -2,14 +2,20 @@ from django import forms
 from django.forms.widgets import PasswordInput, EmailInput, DateInput
 from core.models import User, Teacher, Administrator, Parent, Student
 from django.contrib.auth import forms as auth_forms
+from django.core.mail import send_mail
+from django.template.loader import get_template
 
 
 class UserCreationForm(auth_forms.UserCreationForm):
     password1 = None
     password2 = None
 
-    def send_welcome_email(self, user):
-        pass
+    @staticmethod
+    def send_welcome_email(user):
+        if user.email:
+            html = get_template('email/welcome.html').render(dict(user=user))
+            send_mail(subject='Welcome to Academy Center', message='', html_message=html,
+                      from_email='office@academycenter.com', recipient_list=[user.email])
 
     class Meta:
         model = User

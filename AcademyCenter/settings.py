@@ -6,59 +6,34 @@ ADMINS = (
     ('Camilo Valderruten', 'camilovalderruten@gmail.com'),
 )
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MANAGERS = ADMINS
-
-# BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-# PROJECT_DIR = os.path.join(BASE_DIR, os.pardir)
 
 SECRET_KEY = '&l*n+hhw3g5-8a(6e-4v)-asf^_be=$lq^l*6*b#dbqm-$wag@'
 ALLOWED_HOSTS = ['*']
 
-# SHARED_APPS = (
-#     'tenant_schemas',
-#     'home',
-#     'core',
-#     'tenant_users.permissions',
-#     'tenant_users.tenants',
-#     'django.contrib.auth',
-#     'django.contrib.contenttypes',
-#     'django.contrib.sessions',
-#     'django.contrib.messages',
-#     'django.contrib.staticfiles',
-# )
-#
-# TENANT_APPS = (
-#     'django.contrib.contenttypes',
-#     'django.contrib.auth',
-#     'tenant_users.permissions',
-#     'dashboard',
-# )
-#
-# AUTHENTICATION_BACKENDS = (
-#     'tenant_users.permissions.backend.UserBackend',
-# )
-
-# DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'  # Tenant
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 INSTALLED_APPS = (
     'core',
     'home',
     'dashboard',
-    # 'tenant_schemas',
-    # 'tenant_users.permissions',
-    # 'tenant_users.tenants',
+    'report',
+    'attendance',
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
+    "pinax.stripe",
 )
 
 MIDDLEWARE = [
-    # 'tenant_schemas.middleware.TenantMiddleware',  # Tenant
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -66,6 +41,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'pinax.stripe.middleware.ActiveSubscriptionMiddleware',
     'core.middleware.OrganizationMiddleware',
 ]
 
@@ -92,12 +68,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'AcademyCenter.wsgi.application'
 
 DATABASES = {
-    'mysql': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'academycenter',
-        'HOST': 'localhost',
-        'USER': 'root',
-    },
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'academycenter',
@@ -106,10 +76,6 @@ DATABASES = {
         'HOST': 'localhost',
     }
 }
-
-# DATABASE_ROUTERS = (
-#     'tenant_schemas.routers.TenantSyncRouter',  # Tenant
-# )
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -148,9 +114,16 @@ EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = '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'
 EMAIL_USE_TLS = True
 
-
 ROOT_URLCONF = 'AcademyCenter.urls'
 AUTH_USER_MODEL = 'core.User'
-# PUBLIC_SCHEMA_URLCONF = 'AcademyCenter.urls.urls_public'  # Tenant
-# TENANT_MODEL = "core.Organization"  # Tenant
-# TENANT_USERS_DOMAIN = "localhost"
+
+PINAX_STRIPE_PUBLIC_KEY = os.environ.get("STRIPE_TEST_PUBLIC_KEY", "pk_test_jf5SLi86O7gMZf0L9QHj6bzq")
+PINAX_STRIPE_SECRET_KEY = os.environ.get("STRIPE_TEST_SECRET_KEY", "sk_test_guwfnJ833HK37cYpkpteHxxE")
+PINAX_STRIPE_DEFAULT_PLAN = 'basic'
+PINAX_STRIPE_SUBSCRIPTION_REQUIRED_REDIRECT = 'dashboard:index'
+
+
+STRIPE_LIVE_PUBLIC_KEY = os.environ.get("STRIPE_LIVE_PUBLIC_KEY", "pk_live_wRJkslkT2WzEiala8ypPlyD0")
+STRIPE_LIVE_SECRET_KEY = os.environ.get("STRIPE_LIVE_SECRET_KEY", "sk_live_qdIw1RqPJLmjB2yutRrgSO2f")
+
+SITE_ID = 1

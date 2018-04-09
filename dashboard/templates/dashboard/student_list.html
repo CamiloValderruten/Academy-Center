@@ -1,0 +1,72 @@
+{% extends 'dashboard/layout.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <div class="float-right">
+                        {% with "dashboard:create_"|add:role as url %}
+                            <a href="{% url url %}"
+                               class="btn btn-outline-success btn-sm">New</a>
+                        {% endwith %}
+                    </div>
+                    <h5 class="card-title mb-4">{{ role }}</h5>
+                    <div class="table-responsive">
+                        <table class="table center-aligned-table table-hover">
+                            <thead>
+                            <tr>
+                                <th class="border-bottom-0">Username</th>
+                                <th class="border-bottom-0">First Name</th>
+                                <th class="border-bottom-0">Last Name</th>
+                                <th class="border-bottom-0">Checked In</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for user in object_list|dictsort:'username' %}
+                                {% with "dashboard:"|add:role as url %}
+                                    <tr class='clickable-row' data-href='{% url url pk=user.pk %}'>
+                                        <td>{{ user.username }}</td>
+                                        <td>{{ user.first_name }}</td>
+                                        <td>{{ user.last_name }}</td>
+                                        <td>
+                                            {% if user.checked_in %}
+                                                {% if request.user.role_level == 'teacher' or request.user.role_level == 'administrator' %}
+                                                    <a href="{% url 'dashboard:attendance:check_out' user_id=user.pk %}">
+                                                        <button class="btn btn-warning mt-2">Check Out</button>
+                                                    </a>
+                                                {% else %}
+                                                    <button class="btn btn-warning mt-2">Checked Out</button>
+                                                {% endif %}
+                                            {% else %}
+                                                {% if request.user.role_level == 'teacher' or request.user.role_level == 'administrator' %}
+                                                    <a href="{% url 'dashboard:attendance:check_in' user_id=user.pk %}">
+                                                        <button class="btn btn-success mt-2">Check In</button>
+                                                    </a>
+                                                {% else %}
+                                                    <button class="btn btn-success mt-2">Checked In</button>
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endwith %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+
+        jQuery(document).ready(function ($) {
+            $(".clickable-row").click(function () {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
+{% endblock %}

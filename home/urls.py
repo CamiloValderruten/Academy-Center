@@ -10,7 +10,7 @@ urlpatterns = [
     path('features', views.features, name='features'),
     path('contact', views.contact, name='contact'),
     path('pricing', views.pricing, name='pricing'),
-    path('register', views.register, name='register'),
+    path('register', views.RegisterFormView.as_view(), name='register'),
     path('login', auth_views.LoginView.as_view(template_name="authentication/login.html",
                                                success_url="/dashboard",
                                                redirect_authenticated_user=True), name='login'),

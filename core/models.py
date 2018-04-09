@@ -1,40 +1,48 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, UserManager, Group
+from django.contrib.auth.models import AbstractUser, Group
 from django.core.validators import RegexValidator
 from django.shortcuts import reverse
-from django.conf.urls.static import static
+from datetime import time
 
 
 class Organization(models.Model):
     name = models.CharField(max_length=50, null=False, default=None)
     created_on = models.DateTimeField(auto_now_add=True)
+    logo = models.ImageField(upload_to='logos/', blank=True)
+
+    day_start_time = models.TimeField(default=time(hour=7))
+    day_end_time = models.TimeField(default=time(hour=18))
 
     on_trial = models.BooleanField(default=True)
     trial_started_on = models.DateTimeField(auto_now_add=True)
     stripe_client_id = models.CharField(max_length=100, default=None, null=True)
 
+    def get_absolute_url(self):
+        return reverse('core:organization', args=[str(self.id)])
 
-if Organization.objects.count() is 0:
-    Organization(name="AcademyCenter").save()
-
-
-class OrganizationUserManager(UserManager):
-    def get_queryset(self):
-        return super().get_queryset()
-
-    def for_organization(self, organization):
-        return self.get_queryset().filter(organization=organization)
+    def __str__(self):
+        return self.name
 
 
-class User(AbstractUser):
-    roles = ['administrator', 'teacher', 'parent', 'student']
-    objects = OrganizationUserManager()
+class OrganizationModel(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    date_of_birth = models.DateField(null=True, blank=True)
+
+
+class OrganizationAbstractUser(AbstractUser):
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+
+
+class User(OrganizationAbstractUser):
+    roles = ['administrator', 'teacher', 'parent', 'student']
+    reports = models.ManyToManyField('report.Report')
+    date_of_birth = models.DateField(null=True, blank=True, default=None)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$')
-    phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True)
-    avatar = models.ImageField(default=None, blank=True)
+    phone_number = models.CharField(validators=[phone_regex], max_length=17, null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True)
     gender = models.CharField(max_length=15, choices=[('male', 'Male'), ('female', 'Female')], null=True, blank=True)
+
+    attendance = models.ManyToManyField('attendance.Attendance')
+    checked_in = models.BooleanField(default=False)
 
     @property
     def profile_image_url(self):
@@ -58,9 +66,10 @@ class User(AbstractUser):
 
     def get_or_create_group(self):
         role = getattr(self, 'role')
-        group_filter = Group.objects.filter(name=role)
-        group = Group(name=role) if group_filter.count() is 0 else group_filter.first()
-        group.save()
+        group = Group.objects.filter(name=role).first()
+        if not group:
+            group = Group(name=role)
+            group.save()
         return group
 
     def get_absolute_url(self):
@@ -71,7 +80,7 @@ class Administrator(User):
     role = 'administrator'
 
     def __init__(self, *args, **kwargs):
-        super(User, self).__init__(*args, **kwargs)
+        super(Administrator, self).__init__(*args, **kwargs)
         group = self.get_or_create_group()
         self.save()
         self.groups.add(group)
@@ -90,6 +99,8 @@ class Teacher(User):
 class Parent(User):
     role = 'parent'
     students = models.ManyToManyField("Student")
+    send_email_reports = models.BooleanField(default=True)
+    send_phone_reports = models.BooleanField(default=True)
 
     def __init__(self, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)

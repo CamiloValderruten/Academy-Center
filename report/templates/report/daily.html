@@ -1,0 +1,237 @@
+{% extends 'report/layout.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% load in_group %}
+
+{% block styles %}
+    {{ super }}
+    <style>
+        .events-types-list .event-type {
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row user-profile mb-4">
+        {% block sidebar_left %}
+            <div class="col-md-5 stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="wrapper d-block d-sm-flex align-items-center justify-content-between">
+                            <h4 class="card-title mb-0">{{ object.title }}</h4>
+                            <ul class="nav nav-tabs tab-solid tab-solid-primary mb-0 mt-2" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active show" id="info-tab" data-toggle="tab" href="#info"
+                                       role="tab"
+                                       aria-controls="info" aria-expanded="true" aria-selected="true">Info</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link show" id="info-tab" data-toggle="tab" href="#events"
+                                       role="tab"
+                                       aria-controls="info" aria-expanded="true" aria-selected="true">Events</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="wrapper">
+                            <hr>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade active show" id="info" role="tabpanel" aria-labelledby="info">
+                                    <form method="post">
+                                        {{ form.errors }}
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="name">{{ form.behavior.label }}</label>
+                                            {{ form.behavior|add_class:"form-control" }}
+                                            <small class="form-text text-danger">{{ form.behavior.errors }}</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">{{ form.feeling.label }}</label>
+                                            {{ form.feeling|add_class:"form-control" }}
+                                            <small class="form-text text-danger">{{ form.feeling.errors }}</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">{{ form.eat_amount.label }}</label>
+                                            {{ form.eat_amount|add_class:"form-control" }}
+                                            <small class="form-text text-danger">{{ form.eat_amount.errors }}</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">{{ form.message.label }}</label>
+                                            {{ form.message|add_class:"form-control" }}
+                                            <small class="form-text text-danger">{{ form.message.errors }}</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">{{ form.homework.label }}</label>
+                                            {{ form.homework|add_class:"form-control" }}
+                                            <small class="form-text text-danger">{{ form.homework.errors }}</small>
+                                        </div>
+                                        {% if request.user|in_group:"teacher" or request.user|in_group:"administrator" %}
+                                            <button type="submit" class="btn btn-success mr-2">Update</button>
+                                            <a href="{% url 'dashboard:report:delete' pk=object.pk %}">
+                                                <button type="button" class="btn btn-danger mr-2">Delete
+                                                </button>
+                                            </a>
+
+                                        {% endif %}
+                                    </form>
+
+                                </div><!-- tab content ends -->
+                                {% if user.role_level == "teacher" or user.role_level == 'administrator' %}
+                                    <div class="tab-pane fade" id="events" role="tabpanel"
+                                         aria-labelledby="security-tab">
+                                        <h4 class="card-title mb-0">Create an Event</h4>
+                                        <div class="mb-2">
+                                            <small class="text-muted">Drag or Click</small>
+                                        </div>
+                                        {{ form.errors }}
+                                        <div class="events-types-list py-2">
+                                            <div class="list">
+                                                {% for report in event_types %}
+                                                    <div class="card rounded mb-2 event-type"
+                                                         data-title="{{ report.title }}"
+                                                         data-color="{{ report.color }}"
+                                                         style="background-color: {{ report.color }}">
+                                                        <div class="card-body p-3">
+                                                            <div class="media">
+                                                                <div class="media-body">
+                                                                    <span class="float-right text-white"></span>
+                                                                    <h6 class="text-white">{{ report.title }}</h6>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+        {% block sidebar_right %}
+            <div class="col-md-7 stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="calendar"></div>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'node_modules/jquery/dist/jquery.js' %}"></script>
+    <script src="{% static 'node_modules/jquery-ui/ui/jquery-1-7.js' %}"></script>
+    <script src="{% static 'node_modules/moment/moment.js' %}"></script>
+    <script src="{% static 'node_modules/fullcalendar/dist/fullcalendar.min.js' %}"></script>
+    <script src="{% static 'node_modules/jquery-ui-dist/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'node_modules/list.js/dist/list.min.js' %}"></script>
+    <script src="{% static 'node_modules/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+
+    <script src="{% static 'node_modules/dropify/dist/js/dropify.min.js' %}"></script>
+    <script src="{% static 'js/dropify.js' %}"></script>
+    <script>
+        (function ($) {
+            'use strict';
+            $(function () {
+
+                function create(report) {
+                    console.log(report);
+                    $.ajax({
+                        url: '{% url 'dashboard:report:event_create' pk=object.pk %}',
+                        method: 'post',
+                        dataType: "json",
+                        data: report,
+                        success: function (data) {
+                            window.location.reload();
+                        }
+                    });
+                }
+
+                function update(report) {
+                    $.ajax({
+                        url: '{% url 'dashboard:report:update' pk=object.pk %}',
+                        method: 'post',
+                        data: report,
+                        dataType: "json",
+                        success: function (report) {
+                        }
+                    });
+                }
+
+                $.ajaxSetup({
+                    headers: {"X-CSRFToken": '{{ csrf_token }}'}
+                });
+
+                $('#calendar').fullCalendar({
+                    defaultDate: '{{ object.start|date }}',
+                    maxTime: '{{ request.user.organization.day_end_time.hour }}:{{ request.user.organization.day_end_time.minute }}:00',
+                    minTime: '{{ request.user.organization.day_start_time.hour }}:{{ request.user.organization.day_start_time.minute }}:00',
+                    header: {right: ''},
+                    defaultView: 'agendaDay',
+                    navLinks: false,
+                    height: 'parent',
+                    {% if request.user.role_level == 'administrator' or request.user.role_level == 'teacher' %}
+                        editable: true,
+                        droppable: true,
+                    {% endif %}
+                    eventLimit: true,
+                    allDaySlot: false,
+                    events: [
+                        {% for event in object.events.all %}
+                            {
+                                'id': '{{ event.id }}',
+                                'title': '{{ event.title }}',
+                                'start': '{{ event.start|date }}',
+                                'end': '{{ event.end|date }}',
+                                'allDay': '{{ event.allDay }}',
+                                'url': '{{ event.get_absolute_url }}',
+                                'color': '{{ event.color }}',
+                                'textColor': '{{ event.textColor }}'
+                            },
+                        {% endfor %}
+                    ],
+                    eventDrop: function (event, delta, revertFunc) {
+                        var report = {
+                            start: event.start.utcOffset(0).format(),
+                            end: event.start.utcOffset(0).format()
+                        };
+                        update(report);
+                    },
+                    drop: function (date) {
+                        var report = {
+                            title: this.getAttribute('data-title'),
+                            start: date.toISOString(),
+                            end: date.toISOString(),
+                            color: this.getAttribute('data-color')
+                        };
+                        create(report);
+                    }
+                });
+
+                $('.events-types-list .event-type').draggable({
+                    revert: true,
+                    zIndex: 2,
+                    revertDuration: 0
+                }).click(function () {
+                    var report = {
+                        title: this.getAttribute('data-title'),
+                        start: $('#calendar').fullCalendar('getDate').utcOffset(0).format(),
+                        end: $('#calendar').fullCalendar('getDate').utcOffset(0).format(),
+                        color: this.getAttribute('data-color')
+                    };
+                    create(report);
+                });
+            });
+        })(jQuery);
+    </script>
+{% endblock %}
+
+{% block pagescripts %}
+    {{ block.super }}
+{% endblock %}

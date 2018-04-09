@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth.decorators import login_required
 
 from . import views
@@ -21,4 +21,7 @@ urlpatterns = [
     path('parent/<slug:pk>', login_required(views.ParentView.as_view()), name='parent'),
     path('student/<slug:pk>', login_required(views.StudentView.as_view()), name='student'),
     path('users/<slug:pk>/delete', login_required(core_views.delete_user), name='delete_user'),
+
+    path('report/', include('report.urls'), name='report'),
+    path('attendance/', include('attendance.urls'), name='attendance'),
 ]

@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
+from django.views.generic import FormView
 from django.contrib.auth import login
-from django.http import HttpResponseBadRequest
+from core import models as core_models
 from . import forms
-
-from core import models
 
 
 def index(request):
@@ -26,18 +25,15 @@ def pricing(request):
     return render(request, 'home/pricing.html')
 
 
-def register(request):
-    if request.method == 'POST':
-        form = forms.RegisterForm(request.POST)
-        if form.is_valid():
-            organization = models.Organization(name=form.cleaned_data.pop('organization_name'))
-            organization.save()
-            user = models.Administrator.objects.create_user(organization=organization, **form.cleaned_data)
-            login(request, user)
-            return redirect('dashboard:index')
-        return HttpResponseBadRequest()
+class RegisterFormView(FormView):
+    form_class = forms.RegisterForm
+    template_name = 'authentication/register.html'
 
-    if request.method == "GET":
-        form = forms.RegisterForm()
-        form.order_fields(['organization_name', 'first_name', 'last_name'])
-        return render(request, 'authentication/register.html', dict(form=form))
+    def form_valid(self, form):
+        organization = core_models.Organization(name=form.cleaned_data.pop('organization_name'))
+        organization.save()
+        administrator = core_models.Administrator.objects.create_user(organization=organization, **form.cleaned_data)
+        login(self.request, administrator)
+        self.form_class.send_email(administrator)
+        self.form_class.create_stripe_account(administrator, organization)
+        return redirect('dashboard:index')

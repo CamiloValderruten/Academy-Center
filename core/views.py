@@ -1,6 +1,7 @@
-from . import models
+from . import models, forms
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.views.generic import UpdateView
 
 
 def delete_user(request, pk):
@@ -23,3 +24,9 @@ def unlink_parent_student(request, parent_id, student_id):
     student = models.Student.objects.get(pk=student_id, organization=request.user.organization)
     parent.students.remove(student)
     return redirect(request.META.get('HTTP_REFERER'))
+
+
+class OrganizationView(UpdateView):
+    model = models.Organization
+    form_class = forms.OrganizationForm
+    template_name = "core/organization.html"

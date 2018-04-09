@@ -5,7 +5,13 @@
 {% block title %}Let's get you logged in!{% endblock %}
 {% block submit %}Login{% endblock %}
 
+{% block content %}
+    <div class="text-danger">
+        {{ form.non_field_errors }}
+    </div>
+    {{ block.super }}
+{% endblock %}
+
 {% block after_form %}
-    {{ form.errors }}
     <p class="text-center"><a href="{% url 'home:password_reset' %}">Lost password?</a></p>
 {% endblock %}

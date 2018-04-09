@@ -1,0 +1,98 @@
+{% extends 'dashboard/layout.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'node_modules/dropify/dist/css/dropify.css' %}" type="text/css">
+{% endblock %}
+
+{% block content %}
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="wrapper d-block d-sm-flex align-items-center justify-content-between">
+                        <h4 class="card-title mb-0">{{ request.user.organization.name|title }}</h4>
+                        <ul class="nav nav-tabs tab-solid tab-solid-primary mb-0 mt-2" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active show" id="info-tab" data-toggle="tab" href="#info"
+                                   role="tab"
+                                   aria-controls="info" aria-expanded="true" aria-selected="true">Info</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link show" id="info-tab" data-toggle="tab" href="#payments"
+                                   role="tab"
+                                   aria-controls="info" aria-expanded="true" aria-selected="true">Payment</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="wrapper">
+                        <hr>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade active show" id="info" role="tabpanel" aria-labelledby="info">
+                                <form method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="name">{{ form.name.label }}</label>
+                                        {{ form.name|add_class:"form-control" }}
+                                        <small class="form-text text-danger">{{ form.name.errors }}</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">{{ form.day_start_time.label }}</label>
+                                        {{ form.day_start_time|add_class:"form-control" }}
+                                        <small class="form-text text-danger">{{ form.day_start_time.errors }}</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">{{ form.day_end_time.label }}</label>
+                                        {% render_field form.day_end_time class+="form-control" type='time' %}
+                                        <small class="form-text text-danger">{{ form.day_end_time.errors }}</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">Logo</label>
+                                        {% render_field form.logo data-height="100" class+="dropify" %}
+                                        <small class="form-text text-danger">{{ form.logo.errors }}</small>
+                                    </div>
+                                    <button type="submit" class="btn btn-success mr-2">Update</button>
+                                </form>
+
+                            </div><!-- tab content ends -->
+                            <div class="tab-pane fade" id="payments" role="tabpanel"
+                                 aria-labelledby="security-tab">
+                                <form method="post" action="{% url 'home:password_change' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="name">{{ reset_change_form.old_password.label }}</label>
+                                        {% render_field reset_change_form.old_password class+="form-control" %}
+                                        <small class="form-text text-danger">
+                                            {{ reset_change_form.old_password.errors }}</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">{{ reset_change_form.new_password1.label }}</label>
+                                        {% render_field reset_change_form.new_password1 class+="form-control" %}
+                                        <small class="form-text text-danger">
+                                            {{ reset_change_form.new_password1.errors }}
+                                        </small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">{{ reset_change_form.new_password2.label }}</label>
+                                        {% render_field reset_change_form.new_password2 class+="form-control" %}
+                                        <small class="form-text text-danger">
+                                            {{ reset_change_form.new_password2.errors }}
+                                        </small>
+                                    </div>
+                                    <button type="submit" class="btn btn-success mr-2">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'node_modules/jquery/dist/jquery.js' %}"></script>
+    <script src="{% static 'node_modules/dropify/dist/js/dropify.min.js' %}"></script>
+    <script src="{% static 'js/dropify.js' %}"></script>
+{% endblock %}

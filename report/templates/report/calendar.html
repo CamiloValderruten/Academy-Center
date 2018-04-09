@@ -1,0 +1,144 @@
+{% extends 'dashboard/layout.html' %}
+{% load static %}
+
+{% block styles %}
+    {{ super }}
+    <link rel="stylesheet" href="{% static 'node_modules/fullcalendar/dist/fullcalendar.min.css' %}" type="text/css">
+    <style>
+        .report-types-list .report-type {
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% load widget_tweaks %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-3 stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-0">Create a report</h4>
+                    <div class="mb-2">
+                        <small class="text-muted">Drag or Click</small>
+                    </div>
+                    {{ form.errors }}
+                    <div class="report-types-list py-2">
+                        <div class="list">
+                            {% for report in report_types %}
+                                <div class="card rounded mb-2 report-type"
+                                     data-title="{{ report.title }}"
+                                     data-color="{{ report.color }}"
+                                     style="background-color: {{ report.color }}">
+                                    <div class="card-body p-3">
+                                        <h6 class="text-white">{{ report.title }} Report</h6>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super }}
+    <script src="{% static 'node_modules/jquery/dist/jquery.js' %}"></script>
+    <script src="{% static 'node_modules/jquery-ui/ui/jquery-1-7.js' %}"></script>
+    <script src="{% static 'node_modules/moment/moment.js' %}"></script>
+    <script src="{% static 'node_modules/fullcalendar/dist/fullcalendar.min.js' %}"></script>
+    <script src="{% static 'node_modules/jquery-ui-dist/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'node_modules/list.js/dist/list.min.js' %}"></script>
+    <script>
+        (function ($) {
+            'use strict';
+            $(function () {
+                function create(report) {
+                    var u = '{% url 'dashboard:report:daily_create' user_id=view.kwargs.user_id %}';
+                    $.ajax({
+                        url: u,
+                        method: 'post',
+                        dataType: "json",
+                        data: report,
+                        success: function (data) {
+                            window.location.reload();
+                        }
+                    });
+                }
+
+                $.ajaxSetup({
+                    headers: {"X-CSRFToken": '{{ csrf_token }}'}
+                });
+                $('#calendar').fullCalendar({
+                    header: {
+                        right: 'prev,next'
+                    },
+                    navLinks: true,
+                    editable: true,
+                    droppable: true,
+                    eventLimit: true,
+                    events: [
+                        {% for report in report_list %}
+                            {
+                                'id': '{{ report.id }}',
+                                'title': '{{ report.title }}',
+                                'start': '{{ report.start|date }}',
+                                'end': '{{ report.end|date }}',
+                                'allDay': '{{ report.allDay }}',
+                                'url': '{{ report.url }}',
+                                'color': '{{ report.color }}',
+                                'textColor': '{{ report.textColor }}'
+                            },
+                        {% endfor %}
+                    ],
+                    eventDrop: function (event, delta, revertFunc) {
+                        var u = '{% url 'dashboard:report:update' pk="--" %}';
+                        u = u.replace('--', event.id);
+                        var report = {
+                            start: event.start.utcOffset(0).format(),
+                            end: event.start.utcOffset(0).format()
+                        };
+                        $.ajax({
+                            url: u,
+                            method: 'post',
+                            data: report,
+                            dataType: "json",
+                            success: function (report) {
+                            }
+                        });
+                    },
+                    drop: function (date) {
+                        var report = {
+                            title: this.getAttribute('data-title'),
+                            start: date.utcOffset(0).format(),
+                            end: date.utcOffset(0).format(),
+                            color: this.getAttribute('data-color')
+                        };
+                        create(report);
+                    }
+                });
+                $('.report-types-list .report-type').draggable({
+                    revert: true,
+                    zIndex: 2,
+                    revertDuration: 0
+                }).click(function () {
+                    var report = {
+                        title: this.getAttribute('data-title'),
+                        start: $('#calendar').fullCalendar('getDate').utcOffset(0).format(),
+                        end: $('#calendar').fullCalendar('getDate').utcOffset(0).format(),
+                        color: this.getAttribute('data-color')
+                    };
+                    create(report);
+                });
+            });
+        })(jQuery);
+    </script>
+{% endblock %}

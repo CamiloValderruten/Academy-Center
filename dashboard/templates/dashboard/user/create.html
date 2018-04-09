@@ -41,7 +41,11 @@
                             <div class="form-group row">
                                 <label class="col-sm-3 col-form-label">{{ form.email.label }}</label>
                                 <div class="col-sm-9">
-                                    {{ form.email | add_class:"form-control" }}
+                                    {% if role == 'student' %}
+                                        {% render_field form.email class+="form-control" %}
+                                    {% else %}
+                                        {% render_field form.email class+="form-control" required='true' %}
+                                    {% endif %}
                                     <small class="form-text text-danger">{{ form.email.errors }}</small>
                                 </div>
                             </div>
